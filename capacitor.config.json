@@ -1,0 +1,6 @@
+{
+  "appId": "com.udemy.course.ionic.angular",
+  "appName": "ionic-angular-course",
+  "bundledWebRuntime": false,
+  "webDir": "www"
+}

@@ -21,11 +21,16 @@ export class PlacesService {
     'The Foggy Palace',
     'Not your average city trip!',
     'https://static.mansionglobal.com/production/media/article-images/0b91abb1004e6851a03f9a399b790e13/large_DSC_1423.jpg',
-    99.99)
+    99.99
+    )
   ];
 
   get places() {
     return [...this._places];
   }
   constructor() { }
+
+  getPlace(id: string) {
+    return {...this._places.find(p => p.id === id)};
+  }
 }

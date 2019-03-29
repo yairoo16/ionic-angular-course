@@ -1,3 +1,4 @@
+import { HttpClient } from 'selenium-webdriver/http';
 import { Injectable } from '@angular/core';
 import { Place } from './place.model';
 import { AuthService } from '../auth/auth.service';
@@ -43,7 +44,7 @@ export class PlacesService {
   get places() {
     return this._places.asObservable();
   }
-  constructor(private authService: AuthService ) { }
+  constructor(private authService: AuthService, private http: HttpClient ) { }
 
   getPlace(id: string) {
     return this.places.pipe(
@@ -59,17 +60,17 @@ export class PlacesService {
             dateFrom: Date,
             dateTo: Date) {
 
-      const newPlace = new Place(Math.random().toString(),
-                                  title,
-                                  description,
-                                  'https://francetravelplanner.com/assets/paris/hotels/aj_jules_ferry1693.jpg',
-                                  price,
-                                  dateFrom,
-                                  dateTo,
-                                  this.authService.userId);
-      return this._places.pipe(take(1), delay(1000), tap(places => {
-          this._places.next(places.concat(newPlace));
-      }));
+    const newPlace = new Place(Math.random().toString(),
+      title,
+      description,
+      'https://francetravelplanner.com/assets/paris/hotels/aj_jules_ferry1693.jpg',
+      price,
+      dateFrom,
+      dateTo,
+      this.authService.userId);
+    return this._places.pipe(take(1), delay(1000), tap(places => {
+      this._places.next(places.concat(newPlace));
+    }));
   }
 
   updatePlace(placeId: string, title: string, description: string) {

@@ -5,5 +5,5 @@ export interface Coordinates {
 
 export interface PlaceLocation extends Coordinates {
     address: string;
-    staticMapImageUl: string;
+    staticMapImageUrl: string;
 }

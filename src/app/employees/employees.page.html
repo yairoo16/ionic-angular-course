@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>employees</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2">
+        <!-- <div *ngIf="isLoading" text-center>
+          <ion-spinner color="primary"></ion-spinner>
+        </div> -->
+        <div *ngIf="employees.length <= 0">
+          <p text-center>No employees found! Please create one first!</p>
+        </div>
+        <ion-list *ngIf="employees.length > 0">
+          <ion-item *ngFor="let employee of employees" #slidingItem>
+            {{employee.firstName}} {{employee.lastName}}
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,6 +1,7 @@
 import { AuthGuard } from './auth/auth.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { EmployeesResolver } from './employees/employees.resolver';
 
 const routes: Routes = [
   { path: '', redirectTo: 'places', pathMatch: 'full' },
@@ -14,6 +15,11 @@ const routes: Routes = [
     path: 'bookings',
     loadChildren: './bookings/bookings.module#BookingsPageModule',
     canLoad: [AuthGuard]
+  },
+  {
+    path: 'employees',
+    loadChildren: './employees/employees.module#EmployeesPageModule',
+    resolve: {employees: EmployeesResolver}
   }
 ];
 

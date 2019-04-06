@@ -1,3 +1,5 @@
+import { PlaceLocation } from './loaction.model';
+
 export interface PlaceData {
     availableFrom: string;
     availableTo: string;
@@ -6,4 +8,5 @@ export interface PlaceData {
     price: number;
     title: string;
     userId: string;
+    location: PlaceLocation;
 }

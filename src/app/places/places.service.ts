@@ -98,13 +98,23 @@ export class PlacesService {
     );
   }
 
+  uploadImage(image: File) {
+    const uploadData = new FormData();
+    uploadData.append('image', image);
+    return this.http.post<{imageUrl: string, imagePath: string}>(
+      'https://us-central1-ionic-angula-couse.cloudfunctions.net/storeImage',
+      uploadData
+      );
+  }
+
   addPlace(
     title: string,
     description: string,
     price: number,
     dateFrom: Date,
     dateTo: Date,
-    location: PlaceLocation
+    location: PlaceLocation,
+    imageUrl: string
     ) {
 
     let generatedId: string;
@@ -112,7 +122,7 @@ export class PlacesService {
       Math.random().toString(),
       title,
       description,
-      'https://francetravelplanner.com/assets/paris/hotels/aj_jules_ferry1693.jpg',
+      imageUrl,
       price,
       dateFrom,
       dateTo,

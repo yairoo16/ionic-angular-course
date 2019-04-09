@@ -1,5 +1,5 @@
 import { PlaceLocation, Coordinates } from './../../../places/loaction.model';
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { MapModalComponent } from '../map-modal/map-modal.component';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { Plugins, Capacitor } from '@capacitor/core';
 })
 export class LocationPickerComponent implements OnInit {
   @Output() locationPick = new EventEmitter<PlaceLocation>();
+  @Input() showPreview = false;
   selectedLocationImage: string;
   isLoading = false;
   constructor(
@@ -53,8 +54,7 @@ export class LocationPickerComponent implements OnInit {
     this.isLoading = true;
     Plugins.Geolocation.getCurrentPosition()
       .then(geoPosition => {
-        const coordinates: Coordinates =
-        {
+        const coordinates: Coordinates = {
           lat: geoPosition.coords.latitude,
           lng: geoPosition.coords.longitude
         };

@@ -1,9 +1,10 @@
-import { BehaviorSubject } from 'rxjs';
-import { Booking } from './booking.model';
 import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { take, tap, delay, switchMap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
+import { take, tap, delay, switchMap, map } from 'rxjs/operators';
+
+import { Booking } from './booking.model';
+import { AuthService } from '../auth/auth.service';
 
 interface BookingData {
   bookedFrom: string;
@@ -38,21 +39,31 @@ export class BookingService {
     dateTo: Date
   ) {
     let generatedId: string;
-    const newBooking = new Booking(
-      Math.random().toString(),
-      placeId,
-      this.authService.userId,
-      placeTitle,
-      placeImage,
-      firstName,
-      lastName,
-      guestNumber,
-      dateFrom,
-      dateTo
-    );
-    return this.http.post<{name: string}>('https://ionic-angula-couse.firebaseio.com/bookings.json',
-      {...newBooking, id: null})
-      .pipe(switchMap(resData => {
+    let newBooking: Booking;
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('No user id found!');
+        }
+        newBooking = new Booking(
+          Math.random().toString(),
+          placeId,
+          userId,
+          placeTitle,
+          placeImage,
+          firstName,
+          lastName,
+          guestNumber,
+          dateFrom,
+          dateTo
+        );
+        return this.http.post<{ name: string }>(
+          'https://ionic-angular-course.firebaseio.com/bookings.json',
+          { ...newBooking, id: null }
+        );
+      }),
+      switchMap(resData => {
         generatedId = resData.name;
         return this.bookings;
       }),
@@ -60,47 +71,61 @@ export class BookingService {
       tap(bookings => {
         newBooking.id = generatedId;
         this._bookings.next(bookings.concat(newBooking));
-      }));
+      })
+    );
   }
 
   cancelBooking(bookingId: string) {
-    return this.http.delete(`https://ionic-angula-couse.firebaseio.com/bookings/${bookingId}.json`)
-    .pipe(switchMap(() => {
-      return this.bookings;
-    }),
-    take(1),
-    tap(bookings => {
-      this._bookings.next(bookings.filter(b => b.id !== bookingId));
-    }));
-
+    return this.http
+      .delete(
+        `https://ionic-angular-course.firebaseio.com/bookings/${bookingId}.json`
+      )
+      .pipe(
+        switchMap(() => {
+          return this.bookings;
+        }),
+        take(1),
+        tap(bookings => {
+          this._bookings.next(bookings.filter(b => b.id !== bookingId));
+        })
+      );
   }
 
   fetchBookings() {
-    return this.http.get<{[key: string]: BookingData}>(`https://ionic-angula-couse.firebaseio.com/bookings.json?orderBy="userId"&equalTo="${
-      this.authService.userId
-      }"`
-    ).pipe(map(bookingData => {
-      const bookings = [];
-      for (const key in bookingData) {
-        if (bookingData.hasOwnProperty(key)) {
-          bookings.push(new Booking(
-            key,
-            bookingData[key].placeId,
-            bookingData[key].userId,
-            bookingData[key].placeTitle,
-            bookingData[key].placeImage,
-            bookingData[key].firstName,
-            bookingData[key].lastName,
-            bookingData[key].guestNumber,
-            new Date(bookingData[key].bookedFrom),
-            new Date(bookingData[key].bookedTo)
-            ));
+    return this.authService.userId.pipe(
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('User not found!');
         }
-      }
-      return bookings;
-    }), tap(bookings => {
-      this._bookings.next(bookings);
-    })
+        return this.http.get<{ [key: string]: BookingData }>(
+          `https://ionic-angular-course.firebaseio.com/bookings.json?orderBy="userId"&equalTo="${userId}"`
+        );
+      }),
+      map(bookingData => {
+        const bookings = [];
+        for (const key in bookingData) {
+          if (bookingData.hasOwnProperty(key)) {
+            bookings.push(
+              new Booking(
+                key,
+                bookingData[key].placeId,
+                bookingData[key].userId,
+                bookingData[key].placeTitle,
+                bookingData[key].placeImage,
+                bookingData[key].firstName,
+                bookingData[key].lastName,
+                bookingData[key].guestNumber,
+                new Date(bookingData[key].bookedFrom),
+                new Date(bookingData[key].bookedTo)
+              )
+            );
+          }
+        }
+        return bookings;
+      }),
+      tap(bookings => {
+        this._bookings.next(bookings);
+      })
     );
   }
 }

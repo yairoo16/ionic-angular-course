@@ -1,4 +1,4 @@
-import { PlaceLocation, Coordinates } from './../../../places/loaction.model';
+import { PlaceLocation, Coordinates } from '../../../places/location.model';
 import { Component, OnInit, EventEmitter, Output, Input } from '@angular/core';
 import { ModalController, ActionSheetController, AlertController } from '@ionic/angular';
 import { MapModalComponent } from '../map-modal/map-modal.component';

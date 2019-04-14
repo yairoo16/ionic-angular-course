@@ -65,7 +65,7 @@ export class BookingService {
           dateTo
         );
         return this.http.post<{ name: string }>(
-          `https://ionic-angular-course.firebaseio.com/bookings.json?auth=${token}`,
+          `https://ionic-angula-couse.firebaseio.com/bookings.json?auth=${token}`,
           { ...newBooking, id: null }
         );
       }),
@@ -86,7 +86,7 @@ export class BookingService {
       take(1),
       switchMap(token => {
         return this.http.delete(
-          `https://ionic-angular-course.firebaseio.com/bookings/${bookingId}.json?auth=${token}`
+          `https://ionic-angula-couse.firebaseio.com/bookings/${bookingId}.json?auth=${token}`
         );
       }),
       switchMap(() => {
@@ -113,7 +113,7 @@ export class BookingService {
       take(1),
       switchMap(token => {
         return this.http.get<{ [key: string]: BookingData }>(
-          `https://ionic-angular-course.firebaseio.com/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+          `https://ionic-angula-couse.firebaseio.com/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
         );
       }),
       map(bookingData => {

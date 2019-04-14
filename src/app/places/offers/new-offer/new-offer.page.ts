@@ -96,7 +96,10 @@ export class NewOfferPage implements OnInit {
         message: 'Creating Place'
       }).then(loadingElem => {
         loadingElem.present();
-        this.placesServices.uploadImage(this.form.get('image').value).pipe(switchMap(uploadRes => {
+        this.placesServices
+        .uploadImage(this.form.get('image').value)
+        .pipe(
+          switchMap(uploadRes => {
           return this.placesServices
             .addPlace(
               this.form.value.title,

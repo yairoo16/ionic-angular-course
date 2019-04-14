@@ -1,4 +1,4 @@
-import { PlaceLocation } from './loaction.model';
+import { PlaceLocation } from './location.model';
 
 export interface PlaceData {
     availableFrom: string;

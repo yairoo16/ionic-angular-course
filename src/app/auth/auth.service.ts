@@ -1,6 +1,6 @@
 import { Plugins } from '@capacitor/core';
 import { Injectable, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject, from } from 'rxjs';
 import { User } from './user.model';
@@ -23,6 +23,8 @@ export class AuthService implements OnDestroy {
 
   private _user = new BehaviorSubject<User>(null);
   private activeLogoutTimer: any;
+
+  baseUrl = environment.apiUrl;
 
   get userIsAuthenticated() {
     return this._user.asObservable().pipe(
@@ -104,25 +106,11 @@ export class AuthService implements OnDestroy {
   }
 
   signup(email: string, password: string) {
-    return this.http
-      .post<AuthResponseData>(
-        `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
-          environment.firebaseAPIKey
-        }`,
-        { email: email, password: password, returnSecureToken: true }
-      )
-      .pipe(tap(this.setUserData.bind(this)));
+    return this.http.post<AuthResponseData>(this.baseUrl + 'register/', {email: email, password: password, returnSecureToken: true});
   }
 
   login(email: string, password: string) {
-    return this.http
-      .post<AuthResponseData>(
-        `https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=${
-          environment.firebaseAPIKey
-        }`,
-        { email: email, password: password, returnSecureToken: true }
-      )
-      .pipe(tap(this.setUserData.bind(this)));
+    return this.http.post<AuthResponseData>(this.baseUrl + 'login/', {email: email, password: password, returnSecureToken: true});
   }
 
   logout() {
